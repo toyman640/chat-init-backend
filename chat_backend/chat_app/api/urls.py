@@ -1,6 +1,14 @@
-from django.urls import path
+from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import UserViewSet
+from .views import UserViewSet, CreateUserView
 
 user_router = DefaultRouter()
-user_router.register(r'users', UserViewSet)
+user_router.register(r'users', UserViewSet, basename='user')
+
+urlpatterns = [
+    # Include the automatically generated URL patterns for UserViewSet
+    path('api/', include(user_router.urls)),
+    
+    # Manually define a path for CreateUserView
+    path('api/create-user/', CreateUserView.as_view(), name='create_user'),
+]
