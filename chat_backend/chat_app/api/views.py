@@ -15,7 +15,7 @@ class CustomObtainAuthToken(ObtainAuthToken):
     serializer.is_valid(raise_exception=True)
     user = serializer.validated_data['user']
     token, created = Token.objects.get_or_create(user=user)
-    return Response({'token': token.key, 'user_id': user.pk, 'username': user.username})
+    return Response({'token': token.key, 'user_id': user.pk, 'username': user.username, 'name': user.name})
 
 class UserViewSet(ModelViewSet):
   queryset = CustomUser.objects.all()
@@ -38,6 +38,6 @@ class MessageViewSet(viewsets.ModelViewSet):
 
   @action(detail=False, methods=['GET'])
   def user_messages(self, request):
-      user_messages = Message.objects.filter(receiver=request.user)
-      serializer = MessageSerializer(user_messages, many=True)
-      return Response(serializer.data)
+    user_messages = Message.objects.filter(receiver=request.user)
+    serializer = MessageSerializer(user_messages, many=True)
+    return Response(serializer.data)
