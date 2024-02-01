@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 from django.contrib.auth.hashers import make_password
-from ..models import CustomUser, Message
+from ..models import CustomUser, Message, ContactList
 from rest_framework import serializers
 
 class UserSerializer(ModelSerializer):
@@ -16,3 +16,9 @@ class MessageSerializer(serializers.ModelSerializer):
   class Meta:
     model = Message
     fields = ('id', 'sender', 'receiver', 'content', 'timestamp')
+
+
+class ContactListSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = ContactList
+    fields = ('id', 'user', 'contact')

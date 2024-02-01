@@ -4,8 +4,8 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import logout
 from django.contrib.auth import authenticate
 from rest_framework.viewsets import ModelViewSet
-from ..models import CustomUser, Message
-from .serializers import UserSerializer, MessageSerializer
+from ..models import CustomUser, Message, ContactList
+from .serializers import UserSerializer, MessageSerializer, ContactListSerializer
 from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 from rest_framework import status, viewsets
@@ -49,3 +49,11 @@ class LogoutView(APIView):
   def post(self, request):
     logout(request)
     return Response({"message": "Logout successful"}, status=status.HTTP_200_OK)
+
+class ContactListViewSet(viewsets.ModelViewSet):
+  queryset = ContactList.objects.all()
+  serializer_class = ContactListSerializer
+
+  def perform_create(self, serializer):
+    # Automatically set the user to the current authenticated user
+    serializer.save(user=self.request.user)

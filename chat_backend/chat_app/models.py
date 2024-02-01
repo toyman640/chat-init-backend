@@ -18,3 +18,10 @@ class Message(models.Model):
 
   def __str__(self):
     return f'{self.sender.username} to {self.receiver.username}: {self.content}'
+
+class ContactList(models.Model):
+  user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='contacts')
+  contact = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='in_contact_lists')
+
+  def __str__(self):
+    return f'{self.user.username}\'s Contact'
