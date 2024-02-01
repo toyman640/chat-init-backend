@@ -77,6 +77,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'chat_backend.wsgi.application'
 
+APPEND_SLASH=False
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
