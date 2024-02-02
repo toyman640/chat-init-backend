@@ -1,13 +1,16 @@
 from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
+from django.contrib.auth import logout
 from django.contrib.auth import authenticate
 from rest_framework.viewsets import ModelViewSet
-from ..models import CustomUser, Message
-from .serializers import UserSerializer, MessageSerializer
+from ..models import CustomUser, Message, ContactList
+from .serializers import UserSerializer, MessageSerializer, ContactListSerializer
 from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
+from rest_framework.views import APIView
 
 class CustomObtainAuthToken(ObtainAuthToken):
   def post(self, request, *args, **kwargs):
@@ -41,3 +44,20 @@ class MessageViewSet(viewsets.ModelViewSet):
     user_messages = Message.objects.filter(receiver=request.user)
     serializer = MessageSerializer(user_messages, many=True)
     return Response(serializer.data)
+
+class LogoutView(APIView):
+  def post(self, request):
+    logout(request)
+    return Response({"message": "Logout successful"}, status=status.HTTP_200_OK)
+
+class ContactListViewSet(viewsets.ModelViewSet):
+  serializer_class = ContactListSerializer
+  # permission_classes = [IsAuthenticated]
+
+  def get_queryset(self):
+    # Filter contacts based on the current authenticated user
+    return ContactList.objects.all()
+
+  def perform_create(self, serializer):
+    # Automatically set the user to the current authenticated user
+    serializer.save(user=self.request.user)
