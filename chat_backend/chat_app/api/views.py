@@ -51,8 +51,12 @@ class LogoutView(APIView):
     return Response({"message": "Logout successful"}, status=status.HTTP_200_OK)
 
 class ContactListViewSet(viewsets.ModelViewSet):
-  queryset = ContactList.objects.all()
   serializer_class = ContactListSerializer
+  # permission_classes = [IsAuthenticated]
+
+  def get_queryset(self):
+    # Filter contacts based on the current authenticated user
+    return ContactList.objects.all()
 
   def perform_create(self, serializer):
     # Automatically set the user to the current authenticated user
